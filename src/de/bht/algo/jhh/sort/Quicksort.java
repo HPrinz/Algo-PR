@@ -1,62 +1,71 @@
+/**
+ * 
+ */
 package de.bht.algo.jhh.sort;
 
-import java.io.File;
-import java.util.HashMap;
-
-import de.bht.algo.bohnet.FileIntArray;
-
 /**
- * Diese Klasse sortiert Zahlen nach dem Quicksort-Algorithmus
- * 
- * @author Jan, Hala, Hanna
+ * @author Hala, Hanna, Jan
  * 
  */
 public class Quicksort {
-  //giTTest
+  int[] zahlen;
 
-  /**
-   * die Hashmap in der alle Dateinamen mit ihren Zahlen gespeichert werden
-   * Bitte über getIntsOfFile(String) darauf zugreifen
-   */
-  private static HashMap<String, int[]> fileMap = new HashMap<String, int[]>();
+  public Quicksort(int[] zahlen) {
+    this.zahlen = zahlen;
 
-  /** Der Ordner in dem die Dateien mit den Zahlen gefunden werden können */
-  private final static String fileFolder = "files";
+    sortiere(zahlen, 0, zahlen.length - 1);
+  }
 
-  /**
-   * Der Eintiegspunkt für das Programm. Von hier aus werden automatisch die
-   * Dateien mit den Zahlen eingelesen. Sie werden in einer Hashmap gespeichert.
-   * Der Schlüssel ist der Dateiname und der Wert das passende int-Array.
-   * 
-   * @param args
-   *          keine Parameter hier
-   */
-  public static void main(String[] args) {
-    for (File f : new File(fileFolder).listFiles()) {
-      String name = f.getName();
-      int[] numbers = FileIntArray.FileToIntArray(fileFolder + "/" + name);
-      fileMap.put(name, numbers);
+  public static String zahlenArraysToString(int[] zahlen) {
+    String s = "";
+    for (int i = 0; i < zahlen.length; i++) {
+      s += zahlen[i] + ", ";
     }
-
-    // zum testen
-    int[] testInt = getIntsOfFile("Rand50_2");
+    return s;
   }
 
-  /**
-   * Mit dieser Methode kann auf die int-Arrays der jeweiligen Datei zugegriffen
-   * werden. Allerdings wird hier nicht wie in FileIntArray.FileToIntArray()
-   * versucht die Datei zu lesen, sondern der Name der Datei wird in der zuvor
-   * erstellten HashMap gesucht.
-   * 
-   * @param fileName
-   * @return
-   */
-  public static int[] getIntsOfFile(String fileName) {
-    int[] retValue = fileMap.get(fileName);
-    // zum testen
-    System.out.println("File " + fileName + " keeps " + retValue.length + " Numbers");
-    System.out.println("Die ersten beiden Zahlen in " + fileName + " sind " + retValue[0] + " und " + retValue[1]);
-    return retValue;
-  }
+  private void sortiere(int[] zahlen, int l, int r) {
 
+    int positionRechts = r;
+
+    /*
+     * Sortierung von der Mitte aus starten
+     */
+    // int pivot = zahlen.length / 2 ;
+    int pivot = Math.round((r + 1 - l) / 2 + l);
+    System.out.println();
+    System.out.println("Mittelwert: " + zahlen[pivot]);
+    if (l < r) {
+      for (int i = l; i < zahlen.length; i++) {
+        if (zahlen[i] >= zahlen[pivot]) {
+
+          for (int j = positionRechts; j >= 0; j--) {
+
+            if (zahlen[j] <= zahlen[pivot]) {
+              positionRechts = j;
+              int tmpJ = zahlen[j];
+              zahlen[j] = zahlen[i];
+              zahlen[i] = tmpJ;
+
+              System.out.println("Zahlen " + "(Index " + l + "-" + r + "): " + zahlenArraysToString(zahlen));
+
+              break;
+            } else if (i == j) {
+              int tmpJ = zahlen[j];
+              zahlen[j] = zahlen[pivot];
+              zahlen[pivot] = tmpJ;
+              sortiere(zahlen, l, pivot - 1);
+              sortiere(zahlen, pivot + 1, r);
+
+              System.out.println("fertig 1: " + zahlenArraysToString(zahlen));
+
+              continue;
+            }
+          }
+
+        }
+      }
+
+    }
+  }
 }

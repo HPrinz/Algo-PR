@@ -27,7 +27,7 @@ public class FileReader {
   /**
    * Der Eintiegspunkt für das Programm. Von hier aus werden automatisch die
    * Dateien mit den Zahlen eingelesen. Sie werden in einer Hashmap gespeichert.
-   * Der Schlüssel ist der Dateiname und der Wert das passende int-Array.
+   * Der Schl�ssel ist der Dateiname und der Wert das passende int-Array.
    * 
    * @param args
    *          keine Parameter hier
@@ -42,9 +42,7 @@ public class FileReader {
 
     // zum testen
     int[] testInt = getIntsOfFile("Rand10_1");
-    System.out.println("Array am Anfang " + Quicksort.zahlenArraysToString(testInt));
-    new Quicksort(testInt);
-
+    new QuicksortJAN(testInt);
   }
 
   /**

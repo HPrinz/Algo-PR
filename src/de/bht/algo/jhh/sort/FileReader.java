@@ -42,7 +42,13 @@ public class FileReader {
 
     // zum testen
     int[] testInt = getIntsOfFile("Rand500_2");
-    new QuicksortJAN(testInt);
+//    int[] testInt = getIntsOfFile("Rand10000_2");
+//    int[] testInt = getIntsOfFile("Rand100000_2");
+
+//    int[] testInt = getIntsOfFile("Sort500_1");
+//    int[] testInt = getIntsOfFile("Sort10000_1");
+//    int[] testInt = getIntsOfFile("Sort100000_1");
+    new Quicksort(testInt);
   }
 
   /**

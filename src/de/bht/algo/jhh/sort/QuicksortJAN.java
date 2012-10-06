@@ -19,10 +19,15 @@ public class QuicksortJAN {
 	 */
 	public QuicksortJAN( int[] zahlen ) {
 		this.zahlen = zahlen;
+		long startTime = System.currentTimeMillis();
+
 		// erster durchlauf
 		System.out.println( "ANFANG: " + zahlenArraysToString( zahlen ) );
 		sortiere( zahlen, 0, zahlen.length - 1 );
+
+		long endTime = System.currentTimeMillis();
 		System.out.println( "ENDE: " + zahlenArraysToString( zahlen ) );
+		System.out.println("Dauer " + (endTime - startTime) + " ms");
 	}
 
 	public static String zahlenArraysToString( int[] zahlen ) {

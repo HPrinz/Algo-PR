@@ -41,7 +41,7 @@ public class FileReader {
     }
 
     // zum testen
-    int[] testInt = getIntsOfFile("Rand10_1");
+    int[] testInt = getIntsOfFile("Rand500_2");
     new QuicksortJAN(testInt);
   }
 

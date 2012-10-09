@@ -15,18 +15,19 @@ public class Quicksort {
    */
   public Quicksort(int[] zahlen) {
     this.zahlen = zahlen;
-    // timer starten
-    long startTime = System.currentTimeMillis();
 
     // erster durchlauf
     System.out.println("ANFANG: " + zahlenArraysToString(zahlen));
+    // timer starten
+    System.out.println("Timer startet.");
+    long startTime = System.nanoTime();
     sortiere(zahlen, 0, zahlen.length - 1);
     
     // timer beenden
-    long endTime = System.currentTimeMillis();
-    
+    long endTime = System.nanoTime();
+    System.out.println("Timer beendet.");
+    System.out.println("Dauer " + (endTime - startTime) + " Nanosekunden");    
     System.out.println("ENDE: " + zahlenArraysToString(zahlen));
-    System.out.println("Dauer " + (endTime - startTime) + " Millisekunden");
   }
 
   public static String zahlenArraysToString(int[] zahlen) {

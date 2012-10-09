@@ -1,19 +1,21 @@
-/**
- * 
- */
 package de.bht.algo.jhh.sort;
 
 /**
+ * 
  * @author Hala, Hanna, Jan
  * 
  */
 public class Quicksort {
   int[] zahlen;
 
+  /**
+   * 
+   * @param zahlen
+   *          das zu sortierende Array
+   */
   public Quicksort(int[] zahlen) {
     this.zahlen = zahlen;
 
-    sortiere(zahlen, 0, zahlen.length - 1);
   }
 
   public static String zahlenArraysToString(int[] zahlen) {
@@ -24,48 +26,64 @@ public class Quicksort {
     return s;
   }
 
-  private void sortiere(int[] zahlen, int l, int r) {
-
+  /**
+   * 
+   * @param zahlen
+   *          ein integerArray
+   * @param l
+   *          die Anfangsposition links ab wohin noch zu sortieren ist
+   * @param r
+   *          die Endposition rechts bis wohin noch zu sortieren ist
+   */
+  public void sortiere(int[] zahlen, int l, int r) {
+    int positionLinks = l;
     int positionRechts = r;
 
     /*
-     * Sortierung von der Mitte aus starten
+     * Sortierung von der Mitte aus starten, Pivotzahl finden
      */
-    // int pivot = zahlen.length / 2 ;
-    int pivot = Math.round((r + 1 - l) / 2 + l);
-    System.out.println();
-    System.out.println("Mittelwert: " + zahlen[pivot]);
-    if (l < r) {
-      for (int i = l; i < zahlen.length; i++) {
-        if (zahlen[i] >= zahlen[pivot]) {
+    int pivot = zahlen[(l + r) / 2];
 
-          for (int j = positionRechts; j >= 0; j--) {
-
-            if (zahlen[j] <= zahlen[pivot]) {
-              positionRechts = j;
-              int tmpJ = zahlen[j];
-              zahlen[j] = zahlen[i];
-              zahlen[i] = tmpJ;
-
-              System.out.println("Zahlen " + "(Index " + l + "-" + r + "): " + zahlenArraysToString(zahlen));
-
-              break;
-            } else if (i == j) {
-              int tmpJ = zahlen[j];
-              zahlen[j] = zahlen[pivot];
-              zahlen[pivot] = tmpJ;
-              sortiere(zahlen, l, pivot - 1);
-              sortiere(zahlen, pivot + 1, r);
-
-              System.out.println("fertig 1: " + zahlenArraysToString(zahlen));
-
-              continue;
-            }
-          }
-
-        }
+    /*
+     * solange sie sich noch nicht getroffen haben
+     */
+    do {
+      /* @formatter:off
+       * suche von links ein Element, dass größer ist als das Pivot
+       * 1  5  6 |3| 7  8  0
+       * i->
+       */
+      while ( zahlen[ positionLinks ] < pivot ) {
+        positionLinks++;
       }
+      
+      /* @formatter:off
+       * suche von rechts ein Element, dass größer ist als das Pivot
+       * 1  5  6 |3| 7  8  0
+                         <-j
+       */
+      while ( zahlen[ positionRechts ] > pivot ) {
+        positionRechts--;
+      }
+      
+      // Zahlen links und rechts vertauschen
+      if ( positionLinks <= positionRechts ) {
+        int falscherWertL = zahlen[ positionLinks ];
+        zahlen[ positionLinks ] = zahlen[ positionRechts ];
+        zahlen[ positionRechts ] = falscherWertL;
+        positionLinks++;
+        positionRechts--;
+      }
+    } while ( positionLinks <= positionRechts );
 
+    /*
+     *  Rekursion
+     */
+    if ( l < positionRechts ) {
+      sortiere( zahlen, l, positionRechts );
+    }
+    if ( positionLinks < r ) {
+      sortiere( zahlen, positionLinks, r );
     }
   }
 }

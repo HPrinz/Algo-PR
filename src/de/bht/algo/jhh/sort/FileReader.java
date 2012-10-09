@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import de.bht.algo.bohnet.FileIntArray;
 
-
 /**
  * Diese Klasse sortiert Zahlen nach dem Quicksort-Algorithmus
  * 
@@ -27,7 +26,7 @@ public class FileReader {
   /**
    * Der Eintiegspunkt fÃ¼r das Programm. Von hier aus werden automatisch die
    * Dateien mit den Zahlen eingelesen. Sie werden in einer Hashmap gespeichert.
-   * Der SchlŸssel ist der Dateiname und der Wert das passende int-Array.
+   * Der Schlï¿½ssel ist der Dateiname und der Wert das passende int-Array.
    * 
    * @param args
    *          keine Parameter hier
@@ -41,8 +40,14 @@ public class FileReader {
     }
 
     // zum testen
-    int[] testInt = getIntsOfFile("Rand500_2");
-    new QuicksortJAN(testInt);
+    // int[] testInt = getIntsOfFile("Rand500_2");
+    int[] testInt = getIntsOfFile("Rand10000_2");
+    // int[] testInt = getIntsOfFile("Rand100000_2");
+
+    // int[] testInt = getIntsOfFile("Sort500_1");
+    // int[] testInt = getIntsOfFile("Sort10000_1");
+    // int[] testInt = getIntsOfFile("Sort100000_1");
+    new Quicksort(testInt);
   }
 
   /**

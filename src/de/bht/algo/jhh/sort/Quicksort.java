@@ -16,6 +16,7 @@ public class Quicksort {
   public Quicksort(int[] zahlen) {
     this.zahlen = zahlen;
 
+    sortiere(zahlen, 0, zahlen.length - 1);
   }
 
   public static String zahlenArraysToString(int[] zahlen) {

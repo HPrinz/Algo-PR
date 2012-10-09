@@ -47,7 +47,6 @@ public class FileReader {
     // int[] testInt = getIntsOfFile("Sort500_1");
     // int[] testInt = getIntsOfFile("Sort10000_1");
     // int[] testInt = getIntsOfFile("Sort100000_1");
-    new Quicksort(testInt);
   }
 
   /**

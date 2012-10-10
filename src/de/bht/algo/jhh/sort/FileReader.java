@@ -31,7 +31,7 @@ public class FileReader {
    * @param args
    *          keine Parameter hier
    */
-  public static void main(String[] args) {
+  public FileReader() {
     for (File f : new File(fileFolder).listFiles()) {
       String name = f.getName();
       int[] numbers = FileIntArray.FileToIntArray(fileFolder + "/" + name);
@@ -64,6 +64,10 @@ public class FileReader {
     System.out.println("File " + fileName + " keeps " + retValue.length + " Numbers");
     System.out.println("Die ersten beiden Zahlen in " + fileName + " sind " + retValue[0] + " und " + retValue[1]);
     return retValue;
+  }
+
+  public HashMap<String, int[]> getFileMap() {
+    return fileMap;
   }
 
 }

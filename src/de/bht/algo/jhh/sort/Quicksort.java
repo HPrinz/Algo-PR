@@ -37,6 +37,7 @@ public class Quicksort {
    *          die Endposition rechts bis wohin noch zu sortieren ist
    */
   public void sortiere(int[] zahlen, int l, int r) {
+
     int positionLinks = l;
     int positionRechts = r;
 

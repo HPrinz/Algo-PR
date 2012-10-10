@@ -11,12 +11,26 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.BoxLayout;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import de.bht.algo.bohnet.FileIntArray;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.JCheckBox;
 
 /**
  * 
@@ -24,16 +38,20 @@ import java.io.File;
  * 
  */
 public class SortGUI extends JFrame {
+  private final String sheetName = "Quicksort";
+  private int counter = 0;
   private final JTextField textField;
   JFileChooser chooser;
   JTextArea textArea;
   private final JTextArea timeArea;
   private final JButton btnSortiere;
+  private Workbook wb;
 
   /**
    * 
    */
   public SortGUI() {
+    wb = prepareExcelSheet(sheetName);
     this.setSize(600, 400);
     getContentPane().setLayout(new GridLayout(3, 2, 10, 10));
 
@@ -62,6 +80,9 @@ public class SortGUI extends JFrame {
     });
 
     fileChooserPanel.add(fileChooserButton);
+
+    final JCheckBox chckbxExportNachxls = new JCheckBox("Export nach .xls");
+    fileChooserPanel.add(chckbxExportNachxls);
 
     JPanel panel_2 = new JPanel();
     panel.add(panel_2);
@@ -99,10 +120,105 @@ public class SortGUI extends JFrame {
         timeArea.append("------------------------------------------- \n");
         textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
         textArea.append("------------------------------------------- \n");
+
+        if (chckbxExportNachxls.isSelected()) {
+          exportRowToExcel(fileName, "" + (endTime - startTime) + "");
+        }
       }
     });
 
     panel_2.add(btnSortiere);
+
+    JButton btnSortiereAlle = new JButton("Sortiere Alle");
+    btnSortiereAlle.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        FileReader fileReader = new FileReader();
+        HashMap<String, int[]> hM = fileReader.getFileMap();
+
+        Iterator it = hM.entrySet().iterator();
+        while (it.hasNext()) {
+          Map.Entry pairs = (Map.Entry) it.next();
+          String fileName = (String) pairs.getKey();
+          int[] zahlen = (int[]) pairs.getValue();
+          System.out.println("Key: " + fileName + " Value: " + Quicksort.zahlenArraysToString(zahlen));
+
+          Quicksort quicksort = new Quicksort(zahlen);
+          System.out.println("nach QS");
+
+          // erster durchlauf
+          textArea.append("Datei: " + fileName + "\n");
+          textArea.append("ANFANGSARRAY: " + Quicksort.zahlenArraysToString(zahlen) + "\n");
+          // timer starten
+          timeArea.append("Timer startet. \n");
+          long startTime = System.nanoTime();
+          quicksort.sortiere(zahlen, 0, zahlen.length - 1);
+
+          // timer beenden
+          long endTime = System.nanoTime();
+          timeArea.append("Timer beendet. \n");
+          timeArea.append("Dauer " + (endTime - startTime) + " Nanosekunden \n");
+          timeArea.append("------------------------------------------- \n");
+          textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
+          textArea.append("------------------------------------------- \n");
+
+          it.remove(); // avoids a ConcurrentModificationException
+
+          if (chckbxExportNachxls.isSelected()) {
+            exportRowToExcel(fileName, "" + (endTime - startTime) + "");
+          }
+        }
+
+      }
+    });
+    panel_2.add(btnSortiereAlle);
+
+    JButton btnFertig = new JButton("Fertig");
+    btnFertig.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        finalizeExcel("Sort_Results.xls");
+      }
+    });
+
+    panel_2.add(btnFertig);
+  }
+
+  private Workbook prepareExcelSheet(String sheetName) {
+    counter++;
+    // Create new workbook and tab
+    wb = new HSSFWorkbook();
+    Sheet sheet = wb.createSheet(sheetName);
+    // Create 2D Cell Array
+    Row row = sheet.createRow(1);
+    Cell cellOne = row.createCell(1);
+    cellOne.setCellValue("Dateinamen");
+    Cell cellTwo = row.createCell(2);
+    cellTwo.setCellValue("Dauer");
+    return wb;
+  }
+
+  private void exportRowToExcel(String fileName, String timeToSort) {
+    counter++;
+    Sheet sheet = wb.getSheet(sheetName);
+    Row row = sheet.createRow(counter);
+    Cell filenameCell = row.createCell(1);
+    filenameCell.setCellValue(fileName);
+    Cell timeCell = row.createCell(2);
+    timeCell.setCellValue(timeToSort);
+  }
+
+  private void finalizeExcel(String fileName) {
+    try {
+      FileOutputStream fileOut = new FileOutputStream(fileName);
+      wb.write(fileOut);
+      fileOut.close();
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Exception not handled in code", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Exception not handled in code", e);
+    }
   }
 
   /**

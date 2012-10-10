@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.BoxLayout;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,6 +32,7 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 
 /**
+ * TODO
  * 
  * @author Hanna
  * 
@@ -41,25 +41,28 @@ public class SortGUI extends JFrame {
   private final String sheetName = "Quicksort";
   private int counter = 0;
   private final JTextField textField;
-  JFileChooser chooser;
-  JTextArea textArea;
+  private final JFileChooser chooser;
+  private final JTextArea textArea;
   private final JTextArea timeArea;
   private final JButton btnSortiere;
-  private Workbook wb;
+  private final Workbook wb;
+  private final JCheckBox chckbxExportNachxls;
+  private final JButton btnFertig;
+  private final JButton btnSortiereAlle;
+  private final JButton fileChooserButton;
 
   /**
-   * 
+   * TODO
    */
   public SortGUI() {
     wb = prepareExcelSheet(sheetName);
     this.setSize(600, 400);
     getContentPane().setLayout(new GridLayout(3, 2, 10, 10));
 
-    JPanel panel = new JPanel();
-    getContentPane().add(panel);
-
     chooser = new JFileChooser("files");
 
+    JPanel panel = new JPanel();
+    getContentPane().add(panel);
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
     JPanel fileChooserPanel = new JPanel();
@@ -67,25 +70,17 @@ public class SortGUI extends JFrame {
     fileChooserPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
     textField = new JTextField();
-    fileChooserPanel.add(textField);
     textField.setColumns(40);
+    fileChooserPanel.add(textField);
 
-    JButton fileChooserButton = new JButton("Datei...");
-    fileChooserButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        chooser.showOpenDialog(chooser.getParent());
-        textField.setText(chooser.getSelectedFile().toString());
-      }
-    });
-
+    fileChooserButton = new JButton("Datei...");
     fileChooserPanel.add(fileChooserButton);
 
-    final JCheckBox chckbxExportNachxls = new JCheckBox("Export nach .xls");
+    chckbxExportNachxls = new JCheckBox("Export nach .xls");
     fileChooserPanel.add(chckbxExportNachxls);
 
-    JPanel panel_2 = new JPanel();
-    panel.add(panel_2);
+    JPanel buttonPanel = new JPanel();
+    panel.add(buttonPanel);
 
     textArea = new JTextArea("");
     JScrollPane textScrollPane = new JScrollPane(textArea);
@@ -96,42 +91,42 @@ public class SortGUI extends JFrame {
     getContentPane().add(timeScrollPane);
 
     btnSortiere = new JButton("Sortiere");
-    btnSortiere.addActionListener(new ActionListener() {
+    buttonPanel.add(btnSortiere);
 
+    btnSortiereAlle = new JButton("Sortiere Alle");
+    buttonPanel.add(btnSortiereAlle);
+
+    btnFertig = new JButton("Fertig");
+    buttonPanel.add(btnFertig);
+
+    initActionListeners();
+  }
+
+  /**
+   * initialisiert die Buttonlistener (zur besseren Übersicht)
+   */
+  private void initActionListeners() {
+
+    fileChooserButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        chooser.showOpenDialog(chooser.getParent());
+        textField.setText(chooser.getSelectedFile().toString());
+      }
+    });
+
+    btnSortiere.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         File file = new File(textField.getText());
         String fileName = file.getName();
         int[] zahlen = FileIntArray.FileToIntArray(file.getAbsolutePath());
-        Quicksort quicksort = new Quicksort(zahlen);
 
-        // erster durchlauf
-        textArea.append("Datei: " + fileName + "\n");
-        textArea.append("ANFANGSARRAY: " + Quicksort.zahlenArraysToString(zahlen) + "\n");
-        // timer starten
-        timeArea.append("Timer startet. \n");
-        long startTime = System.nanoTime();
-        quicksort.sortiere(zahlen, 0, zahlen.length - 1);
-
-        // timer beenden
-        long endTime = System.nanoTime();
-        timeArea.append("Timer beendet. \n");
-        timeArea.append("Dauer " + (endTime - startTime) + " Nanosekunden \n");
-        timeArea.append("------------------------------------------- \n");
-        textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
-        textArea.append("------------------------------------------- \n");
-
-        if (chckbxExportNachxls.isSelected()) {
-          exportRowToExcel(fileName, "" + (endTime - startTime) + "");
-        }
+        callQuicksort(fileName, zahlen);
       }
     });
 
-    panel_2.add(btnSortiere);
-
-    JButton btnSortiereAlle = new JButton("Sortiere Alle");
     btnSortiereAlle.addActionListener(new ActionListener() {
-
       @Override
       public void actionPerformed(ActionEvent arg0) {
         FileReader fileReader = new FileReader();
@@ -144,71 +139,73 @@ public class SortGUI extends JFrame {
           int[] zahlen = (int[]) pairs.getValue();
           System.out.println("Key: " + fileName + " Value: " + Quicksort.zahlenArraysToString(zahlen));
 
-          Quicksort quicksort = new Quicksort(zahlen);
           System.out.println("nach QS");
 
-          // erster durchlauf
-          textArea.append("Datei: " + fileName + "\n");
-          textArea.append("ANFANGSARRAY: " + Quicksort.zahlenArraysToString(zahlen) + "\n");
-          // timer starten
-          timeArea.append("Timer startet. \n");
-          long startTime = System.nanoTime();
-          quicksort.sortiere(zahlen, 0, zahlen.length - 1);
-
-          // timer beenden
-          long endTime = System.nanoTime();
-          timeArea.append("Timer beendet. \n");
-          timeArea.append("Dauer " + (endTime - startTime) + " Nanosekunden \n");
-          timeArea.append("------------------------------------------- \n");
-          textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
-          textArea.append("------------------------------------------- \n");
-
           it.remove(); // avoids a ConcurrentModificationException
-
-          if (chckbxExportNachxls.isSelected()) {
-            exportRowToExcel(fileName, "" + (endTime - startTime) + "");
-          }
         }
-
       }
     });
-    panel_2.add(btnSortiereAlle);
 
-    JButton btnFertig = new JButton("Fertig");
     btnFertig.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         finalizeExcel("Sort_Results.xls");
+        end();
       }
     });
-
-    panel_2.add(btnFertig);
   }
 
+  /**
+   * bereitet die Datenstruktur für das Excel-Workbook vor. Wird pro
+   * Programmaufruf ein mal Ausgeführt (am Anfang)
+   * 
+   * @param sheetName
+   *          der Name des Blatts/Sheets
+   * @return das erstelle Workbook
+   */
   private Workbook prepareExcelSheet(String sheetName) {
+    // neues Workbook und Sheet erstellen
+    Workbook workB = new HSSFWorkbook();
+    Sheet sheet = workB.createSheet(sheetName);
+    // Titelzeile
+    Row rowOne = sheet.createRow(counter);
+    rowOne.createCell(0).setCellValue("LAUFZEITEN QUICKSORT");
     counter++;
-    // Create new workbook and tab
-    wb = new HSSFWorkbook();
-    Sheet sheet = wb.createSheet(sheetName);
-    // Create 2D Cell Array
-    Row row = sheet.createRow(1);
-    Cell cellOne = row.createCell(1);
-    cellOne.setCellValue("Dateinamen");
-    Cell cellTwo = row.createCell(2);
-    cellTwo.setCellValue("Dauer");
-    return wb;
+    // Tabellenkopf
+    Row rowTwo = sheet.createRow(counter);
+    rowTwo.createCell(0).setCellValue("Sortierte Datei");
+    rowTwo.createCell(1).setCellValue("Dauer in Nanosekunden");
+    counter++;
+
+    return workB;
   }
 
+  /**
+   * Fügt eine neue Zeile in dem Excel-Sheet mithilfe eines counters ein. Kann
+   * pro Programmaufruf beliebig oft ausgeführt werden.
+   * 
+   * @param fileName
+   *          der Name der Datei, deren Werte sortiert wurden
+   * @param timeToSort
+   *          Dauer der Sortierung in Nanosekunden
+   */
   private void exportRowToExcel(String fileName, String timeToSort) {
-    counter++;
     Sheet sheet = wb.getSheet(sheetName);
+
     Row row = sheet.createRow(counter);
-    Cell filenameCell = row.createCell(1);
-    filenameCell.setCellValue(fileName);
-    Cell timeCell = row.createCell(2);
-    timeCell.setCellValue(timeToSort);
+    row.createCell(1).setCellValue(fileName);
+    row.createCell(2).setCellValue(timeToSort);
+    counter++;
   }
 
+  /**
+   * Diese Methode erstellt die Excel-Datei mit dem Workbook und dem Sheet, auf
+   * das die Sortierergebnisse geschrieben wurden. Wird nur ein mal pro
+   * Programmaufruf aufgerufen (und zwar am Ende)
+   * 
+   * @param fileName
+   *          wie die Datei heißen soll, kann auch ein Pfad sein
+   */
   private void finalizeExcel(String fileName) {
     try {
       FileOutputStream fileOut = new FileOutputStream(fileName);
@@ -222,8 +219,54 @@ public class SortGUI extends JFrame {
   }
 
   /**
+   * ruft quicksort für die angegeben zaheln auf und gibt die Ergebnisse in der
+   * Kommandozeile aus
+   * 
+   * @param fileName
+   *          der Name der zu sortierenden Datei
+   * @param zahlen
+   *          die zu sortierenden Zahlen
+   */
+  private void callQuicksort(String fileName, int[] zahlen) {
+
+    // Ausgabe der Informationen im Fenster
+    textArea.append("DATEI: " + fileName + "\n");
+    textArea.append("ANFANGSARRAY: " + Quicksort.zahlenArraysToString(zahlen) + "\n");
+    timeArea.append("Timer startet. \n");
+
+    // timer starten
+    long startTime = System.nanoTime();
+
+    // erster durchlauf, starte Quicksort
+    Quicksort quicksort = new Quicksort(zahlen);
+
+    // timer beenden
+    long endTime = System.nanoTime();
+
+    // Ausgabe der Informationen im Fenster
+    timeArea.append("Timer beendet. \n");
+    timeArea.append("DAUER: " + (endTime - startTime) + " Nanosekunden \n");
+    timeArea.append("------------------------------------------- \n");
+    textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
+    textArea.append("------------------------------------------- \n");
+
+    if (chckbxExportNachxls.isSelected()) {
+      exportRowToExcel(fileName, "" + (endTime - startTime) + "");
+    }
+  }
+
+  /**
+   * Schließt das Fenster und beendet das Programm
+   */
+  private void end() {
+    this.dispose();
+  }
+
+  /**
+   * Öffnet das JFrame
    * 
    * @param args
+   *          keine
    */
   public static void main(String[] args) {
     new SortGUI().setVisible(true);

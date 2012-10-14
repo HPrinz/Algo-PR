@@ -32,9 +32,14 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 
 /**
- * TODO
+ * Diese Klasse erstellt eine GUI zum Sortieren.
  * 
- * @author Hanna
+ * - Es koennen alle Dateien eines Ordners sortiert werden 
+ * - Eine Datei kann zum sortieren ueber einen FileChooser ausgewaehlt werden
+ * - Der Dateiname und eine Zeitangabe in Nanosekunden kann in einer xls-Datei gespeichert werden
+ * 
+ * 
+ * @author Hala, Hanna, Jan
  * 
  */
 public class SortGUI extends JFrame {
@@ -52,7 +57,8 @@ public class SortGUI extends JFrame {
   private final JButton fileChooserButton;
 
   /**
-   * TODO
+   * Erstellt die GUI
+   *  
    */
   public SortGUI() {
     wb = prepareExcelSheet(sheetName);
@@ -103,7 +109,7 @@ public class SortGUI extends JFrame {
   }
 
   /**
-   * initialisiert die Buttonlistener (zur besseren Übersicht)
+   * initialisiert die Buttonlistener (zur besseren Uebersicht)
    */
   private void initActionListeners() {
 
@@ -156,11 +162,11 @@ public class SortGUI extends JFrame {
   }
 
   /**
-   * bereitet die Datenstruktur für das Excel-Workbook vor. Wird pro
-   * Programmaufruf ein mal Ausgeführt (am Anfang)
+   * bereitet die Datenstruktur fuer das Excel-Workbook vor. Wird pro
+   * Programmaufruf ein mal Ausgefuehrt (am Anfang)
    * 
    * @param sheetName
-   *          der Name des Blatts/Sheets
+   *          der Name des Blattes/Sheets
    * @return das erstelle Workbook
    */
   private Workbook prepareExcelSheet(String sheetName) {
@@ -175,26 +181,28 @@ public class SortGUI extends JFrame {
     Row rowTwo = sheet.createRow(counter);
     rowTwo.createCell(0).setCellValue("Sortierte Datei");
     rowTwo.createCell(1).setCellValue("Dauer in Nanosekunden");
+    rowTwo.createCell(2).setCellValue("Anzahl Rekursionen");
     counter++;
 
     return workB;
   }
 
   /**
-   * Fügt eine neue Zeile in dem Excel-Sheet mithilfe eines counters ein. Kann
-   * pro Programmaufruf beliebig oft ausgeführt werden.
+   * Fuegt eine neue Zeile in dem Excel-Sheet mithilfe eines counters ein. Kann
+   * pro Programmaufruf beliebig oft ausgefuehrt werden.
    * 
    * @param fileName
    *          der Name der Datei, deren Werte sortiert wurden
    * @param timeToSort
    *          Dauer der Sortierung in Nanosekunden
    */
-  private void exportRowToExcel(String fileName, String timeToSort) {
+  private void exportRowToExcel(String fileName, String timeToSort, String timeRekursionen) {
     Sheet sheet = wb.getSheet(sheetName);
 
     Row row = sheet.createRow(counter);
     row.createCell(1).setCellValue(fileName);
     row.createCell(2).setCellValue(timeToSort);
+    row.createCell(3).setCellValue(timeRekursionen);
     counter++;
   }
 
@@ -204,7 +212,7 @@ public class SortGUI extends JFrame {
    * Programmaufruf aufgerufen (und zwar am Ende)
    * 
    * @param fileName
-   *          wie die Datei heißen soll, kann auch ein Pfad sein
+   *          wie die Datei heissen soll, kann auch ein Pfad sein
    */
   private void finalizeExcel(String fileName) {
     try {
@@ -219,7 +227,7 @@ public class SortGUI extends JFrame {
   }
 
   /**
-   * ruft quicksort für die angegeben zaheln auf und gibt die Ergebnisse in der
+   * ruft quicksort fuer die angegeben Zahlen auf und gibt die Ergebnisse in der
    * Kommandozeile aus
    * 
    * @param fileName
@@ -248,22 +256,23 @@ public class SortGUI extends JFrame {
     timeArea.append("DAUER: " + (endTime - startTime) + " Nanosekunden \n");
     timeArea.append("------------------------------------------- \n");
     textArea.append("ENDE: " + Quicksort.zahlenArraysToString(zahlen) + " \n");
+    textArea.append("REKURSIONEN: " + Quicksort.getRekursionen()  + " \n");
     textArea.append("------------------------------------------- \n");
 
     if (chckbxExportNachxls.isSelected()) {
-      exportRowToExcel(fileName, "" + (endTime - startTime) + "");
+      exportRowToExcel(fileName, "" + (endTime - startTime) + "", "" + Quicksort.getRekursionen());
     }
   }
 
   /**
-   * Schließt das Fenster und beendet das Programm
+   * Schliesst das Fenster und beendet das Programm
    */
   private void end() {
     this.dispose();
   }
 
   /**
-   * Öffnet das JFrame
+   * Oeffnet das JFrame
    * 
    * @param args
    *          keine

@@ -7,6 +7,7 @@ package de.bht.algo.jhh.sort;
  */
 public class Quicksort {
   int[] zahlen;
+  private static int rekursionen = 0;
 
   /**
    * 
@@ -37,7 +38,7 @@ public class Quicksort {
    *          die Endposition rechts bis wohin noch zu sortieren ist
    */
   public void sortiere(int[] zahlen, int l, int r) {
-
+	setRekursionen( getRekursionen() + 1 );
     int positionLinks = l;
     int positionRechts = r;
 
@@ -51,7 +52,7 @@ public class Quicksort {
      */
     do {
       /* @formatter:off
-       * suche von links ein Element, dass größer ist als das Pivot
+       * suche von links ein Element, dass groesser ist als das Pivot
        * 1  5  6 |3| 7  8  0
        * i->
        */
@@ -60,7 +61,7 @@ public class Quicksort {
       }
       
       /* @formatter:off
-       * suche von rechts ein Element, dass größer ist als das Pivot
+       * suche von rechts ein Element, dass groesser ist als das Pivot
        * 1  5  6 |3| 7  8  0
                          <-j
        */
@@ -88,4 +89,12 @@ public class Quicksort {
       sortiere( zahlen, positionLinks, r );
     }
   }
+
+public static int getRekursionen() {
+	return rekursionen;
+}
+
+public void setRekursionen( int rekursionen ) {
+	this.rekursionen = rekursionen;
+}
 }

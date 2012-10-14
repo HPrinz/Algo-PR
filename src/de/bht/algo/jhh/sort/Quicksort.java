@@ -90,11 +90,11 @@ public class Quicksort {
     }
   }
 
-public static int getRekursionen() {
-	return rekursionen;
-}
+  public static int getRekursionen() {
+	  return rekursionen;
+  }
 
-public void setRekursionen( int rekursionen ) {
-	this.rekursionen = rekursionen;
-}
+  public static void setRekursionen( int r ) {
+	  rekursionen = r;
+  }
 }

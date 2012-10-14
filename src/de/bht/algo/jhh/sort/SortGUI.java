@@ -262,6 +262,9 @@ public class SortGUI extends JFrame {
     if (chckbxExportNachxls.isSelected()) {
       exportRowToExcel(fileName, "" + (endTime - startTime) + "", "" + Quicksort.getRekursionen());
     }
+    
+    // Rekursionen auf 0 setzen
+    Quicksort.setRekursionen(0);
   }
 
   /**
